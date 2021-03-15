@@ -19,6 +19,7 @@ import {
 } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {useDispatch, useSelector} from 'react-redux';
+import socker from '../socket/socker';
 
 const Parking = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -31,14 +32,17 @@ const Parking = ({navigation, route}) => {
 
   const getPArkingViewData = async () => {
     console.log(route.params.key);
-    let data = await fetch('http://192.168.0.111:2000/api/getParking', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + accessToken,
+    let data = await fetch(
+      'http://app-d83895ee-04a8-4417-b70b-0873e8873a83.cleverapps.io/api/getParking',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + accessToken,
+        },
+        body: JSON.stringify({laneId: route.params.key}),
       },
-      body: JSON.stringify({laneId: route.params.key}),
-    })
+    )
       .then((res) => res.json())
       .then((data) => data)
       .catch((err) => console.log(err));
@@ -46,8 +50,12 @@ const Parking = ({navigation, route}) => {
     dispatch({type: 'VIEWPARKINGSPACE', payload: data});
   };
   React.useEffect(() => {
-    const func = async () => await getPArkingViewData();
-    func();
+    getPArkingViewData();
+  }, []);
+  React.useEffect(() => {
+    socker.on('parking Update', () => {
+      getPArkingViewData();
+    });
   }, []);
   const [pakringid, setParkingId] = React.useState('');
   const [visible, setVisible] = React.useState(false);
@@ -103,14 +111,18 @@ const Parking = ({navigation, route}) => {
         startTime: fromTime,
         endTime: toTime,
       };
-      let data = await fetch('http://192.168.0.111:2000/api/bookedParking', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + accessToken,
+      socker.emit('parking Booked', route.params.key);
+      let data = await fetch(
+        'http://app-d83895ee-04a8-4417-b70b-0873e8873a83.cleverapps.io/api/bookedParking',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + accessToken,
+          },
+          body: JSON.stringify(body),
         },
-        body: JSON.stringify(body),
-      })
+      )
         .then((res) => res.json())
         .then((data) => data)
         .catch((err) => console.log(err));
@@ -120,6 +132,8 @@ const Parking = ({navigation, route}) => {
       setParkingId('');
       setFromTime(new Date());
       SetToTime(new Date());
+    } else {
+      alert('Check your end time');
     }
   };
   return (
@@ -141,7 +155,7 @@ const Parking = ({navigation, route}) => {
                   let backgroundColor = 'orange';
                   let disable = false;
                   console.log(time, endTime, time > endTime);
-                  if (time < endTime) {
+                  if (time < endTime && data.isBooked === true) {
                     backgroundColor = 'red';
                     disable = true;
                   }

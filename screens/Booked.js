@@ -10,9 +10,15 @@ import {
 } from 'react-native';
 import {Avatar, Button, Card, Title, Paragraph} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
+import socket from '../socket/socker';
 
 const BookedScreen = ({navigation}) => {
   const dispatch = useDispatch();
+  React.useEffect(() => {
+    socket.on('Canceled', () => {
+      getAllUserBookings();
+    });
+  });
   const {totalBookings, accessToken} = useSelector((state) => {
     return {
       totalBookings: state.totalBookings,
@@ -31,14 +37,17 @@ const BookedScreen = ({navigation}) => {
   };
 
   const onCancelOrder = async (id) => {
-    let data = await fetch('http://192.168.0.111:2000/api/cencelBooking', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + accessToken,
+    let data = await fetch(
+      'http://app-d83895ee-04a8-4417-b70b-0873e8873a83.cleverapps.io/api/cencelBooking',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + accessToken,
+        },
+        body: JSON.stringify({id}),
       },
-      body: JSON.stringify({id}),
-    })
+    )
       .then((res) => res.json())
       .then((data) => data)
       .catch((err) => console.log(err));
@@ -47,13 +56,16 @@ const BookedScreen = ({navigation}) => {
     dispatch({type: 'CANCELORDER', payload: id});
   };
   const getAllUserBookings = async () => {
-    let data = await fetch('http://192.168.0.111:2000/api/allBookingByUser', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + accessToken,
+    let data = await fetch(
+      'http://app-d83895ee-04a8-4417-b70b-0873e8873a83.cleverapps.io/api/allBookingByUser',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + accessToken,
+        },
       },
-    })
+    )
       .then((res) => res.json())
       .then((data) => data)
       .catch((err) => console.log(err));

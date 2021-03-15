@@ -47,14 +47,17 @@ const DetailScreen = ({navigation}) => {
 
   const createNewFeedBack = () => {
     if (title !== '' && msg !== '') {
-      let data = fetch('http://192.168.0.111:2000/api/newfeedback', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + accessToken,
+      let data = fetch(
+        'http://app-d83895ee-04a8-4417-b70b-0873e8873a83.cleverapps.io/api/newfeedback',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + accessToken,
+          },
+          body: JSON.stringify({title, msg}),
         },
-        body: JSON.stringify({title, msg}),
-      })
+      )
         .then((res) => res.json())
         .then((data) => data)
         .catch((err) => console.log(err));
@@ -63,13 +66,16 @@ const DetailScreen = ({navigation}) => {
   };
   const getFeedBackByUser = async () => {
     setLoading(true);
-    let data = await fetch('http://192.168.0.111:2000/api/getfeedbackbyuser', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + accessToken,
+    let data = await fetch(
+      'http://app-d83895ee-04a8-4417-b70b-0873e8873a83.cleverapps.io/api/getfeedbackbyuser',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + accessToken,
+        },
       },
-    })
+    )
       .then((res) => res.json())
       .then((data) => data)
       .catch((err) => console.log(err));

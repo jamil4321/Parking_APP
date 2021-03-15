@@ -15,6 +15,7 @@ import MainTabScreen from './screens/MainTabScreen';
 import {DrawerContent} from './screens/DrawerContent';
 import RootStackScreen from './screens/RootStackScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import socketCon from './socket/socker';
 import {useDispatch, useSelector} from 'react-redux';
 
 import thunk from 'redux-thunk';
@@ -53,6 +54,11 @@ const AppNavigator = () => {
     return {
       user: state.user,
     };
+  });
+  React.useEffect(() => {
+    socketCon.on('connected', (data) => {
+      console.log('update');
+    });
   });
 
   console.log(user, 'userData');

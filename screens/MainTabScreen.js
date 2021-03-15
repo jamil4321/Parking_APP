@@ -88,7 +88,7 @@ const DetailStackScreen = ({navigation}) => {
       }}>
       <Stack.Screen
         name="Feed Back"
-        component={DetailScreen}
+        component={ReplyFeedBack}
         options={{
           headerLeft: () => (
             <MaterialIcons

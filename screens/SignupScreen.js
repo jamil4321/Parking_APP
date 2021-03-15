@@ -46,11 +46,14 @@ const SigninScreen = ({navigation}) => {
       confirmPassWord !== ''
     ) {
       if (password === confirmPassWord) {
-        let data = await fetch('http://192.168.0.111:2000/api/signup', {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({email, name, password}),
-        })
+        let data = await fetch(
+          'http://app-d83895ee-04a8-4417-b70b-0873e8873a83.cleverapps.io/api/signup',
+          {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({email, name, password}),
+          },
+        )
           .then((res) => res.json())
           .then((data) => data)
           .catch((err) => err);

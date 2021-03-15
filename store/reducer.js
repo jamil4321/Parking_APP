@@ -51,15 +51,15 @@ const reducer = (state, action) => {
         feedbacks: action.payload.feedbacks,
       };
     case 'REPLYFEEDBACK':
+      console.log(action.payload);
       return {
         ...state,
-        feedbackReply: action.payload.findReplys,
+        feedbackReply: action.payload.MSG,
       };
     case 'SENDMSG':
-      console.log('reply', action.payload);
       return {
         ...state,
-        feedbackReply: [...state.feedbackReply, action.payload.newReply],
+        feedbackReply: [...state.feedbackReply, action.payload.newMsg],
       };
     default:
       return state;

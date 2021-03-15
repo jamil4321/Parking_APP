@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import {Card, Title, Paragraph} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
+import socker from '../socket/socker';
 
 const HomeScreen = ({navigation}) => {
   const dispatch = useDispatch();
@@ -19,14 +20,23 @@ const HomeScreen = ({navigation}) => {
       accessToken: state.accessToken,
     };
   });
+  React.useEffect(() => {
+    socker.on('UpdateLane', (data) => {
+      console.log('UpdateLane', data);
+      getAllLane();
+    });
+  }, []);
   const getAllLane = async () => {
-    let data = await fetch('http://192.168.0.111:2000/api/getLane', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + accessToken,
+    let data = await fetch(
+      'http://app-d83895ee-04a8-4417-b70b-0873e8873a83.cleverapps.io/api/getLane',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + accessToken,
+        },
       },
-    })
+    )
       .then((res) => res.json())
       .then((data) => data)
       .catch((err) => console.log(err));
